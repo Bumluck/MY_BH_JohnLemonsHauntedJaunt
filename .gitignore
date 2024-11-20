@@ -2,13 +2,13 @@
 #
 # Get latest from https://github.com/github/gitignore/blob/main/Unity.gitignore
 #
-/Library/
-/Temp/
-/Obj/
-/Build/
-/Builds/
-/Logs/
-/UserSettings/
+JohnLemonsHauntedJaunt/Library/
+JohnLemonsHauntedJaunt/Temp/
+JohnLemonsHauntedJaunt/Obj/
+JohnLemonsHauntedJaunt/Build/
+JohnLemonsHauntedJaunt/Builds/
+JohnLemonsHauntedJaunt/Logs/
+JohnLemonsHauntedJaunt/UserSettings/
 
 # MemoryCaptures can get excessive in size.
 # They also could contain extremely sensitive data
