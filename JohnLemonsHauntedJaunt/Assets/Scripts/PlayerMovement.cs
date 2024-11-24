@@ -1,9 +1,23 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerMovement : MonoBehaviour
 {
+    public float normalSpeed;
+    public float sprintSpeed;
+    public float sprintDuration;
+    public float sprintCooldown;
+    private float currentSpeed;
+    private float sprintTimer;
+    private float cooldownTimer;
+
+    private bool isSprinting = false;
+    private bool canSprint = true;
+
+    public Image sprintIcon;
+
     public float turnSpeed = 20f;
 
     Animator m_Animator;
@@ -17,10 +31,16 @@ public class PlayerMovement : MonoBehaviour
         m_Animator = GetComponent<Animator>();
         m_Rigidbody = GetComponent<Rigidbody>();
         m_AudioSource = GetComponent<AudioSource>();
+
+        currentSpeed = normalSpeed / 4;
+        sprintTimer = sprintDuration;
+        cooldownTimer = 0f;
     }
 
-    void FixedUpdate()
+    void Update()
     {
+        Sprint();
+
         float horizontal = Input.GetAxis("Horizontal");
         float vertical = Input.GetAxis("Vertical");
 
@@ -48,9 +68,57 @@ public class PlayerMovement : MonoBehaviour
         m_Rotation = Quaternion.LookRotation(desiredForward);
     }
 
+    void FixedUpdate()
+    {
+        m_Rigidbody.MovePosition(m_Rigidbody.position + m_Movement * currentSpeed * Time.fixedDeltaTime);
+        m_Rigidbody.MoveRotation(m_Rotation);
+    }
+
     void OnAnimatorMove()
     {
         m_Rigidbody.MovePosition(m_Rigidbody.position + m_Movement * m_Animator.deltaPosition.magnitude);
         m_Rigidbody.MoveRotation(m_Rotation);
+    }
+
+    void Sprint()
+    {
+        if (isSprinting)
+        {
+            sprintTimer -= Time.deltaTime;
+            if (sprintTimer <= 0f)
+            {
+                isSprinting = false;
+                currentSpeed = normalSpeed / 4;
+                cooldownTimer = sprintCooldown;
+                canSprint = false;
+            }
+        }
+        else if (cooldownTimer > 0f)
+        {
+            cooldownTimer -= Time.deltaTime;
+            if (cooldownTimer <= 0f)
+            {
+                canSprint = true;
+            }
+        }
+
+        if (Input.GetKey(KeyCode.LeftShift) && canSprint)
+        {
+            if (!isSprinting)
+            {
+                isSprinting = true;
+                sprintTimer = sprintDuration;
+                currentSpeed = sprintSpeed;
+            }
+        }
+        else
+        {
+            if (!isSprinting && !Input.GetKey(KeyCode.LeftShift))
+            {
+                currentSpeed = normalSpeed / 4;
+            }
+        }
+
+        sprintIcon.enabled = canSprint;
     }
 }
