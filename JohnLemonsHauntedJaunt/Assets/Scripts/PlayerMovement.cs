@@ -121,4 +121,15 @@ public class PlayerMovement : MonoBehaviour
 
         sprintIcon.enabled = canSprint;
     }
+
+    private void OnTriggerEnter(Collider whatDidIHit)
+    {
+        if (whatDidIHit.tag == "ScoreGoal")
+        {
+            GameObject.Find("ScoreManager").GetComponent<ScoreManager>().EarnScore(5);
+            Destroy(whatDidIHit.gameObject);
+
+        }
+    }
+
 }
